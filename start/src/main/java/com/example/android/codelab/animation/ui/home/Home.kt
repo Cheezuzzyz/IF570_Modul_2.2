@@ -20,6 +20,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -702,9 +703,13 @@ private fun Modifier.swipeToDismiss(
     // TODO 6-1: Create an Animatable instance for the offset of the swiped element.
     pointerInput(Unit) {
         // Used to calculate a settling position of a fling animation.
-        val decay = splineBasedDecay<Float>(this)
-        // Wrap in a coroutine scope to use suspend functions for touch events and animation.
-        coroutineScope {
+        val offsetX = remember { Animatable(0f) } // Add this line
+        // used to receive user touch events
+        pointerInput {
+            // Used to calculate a settling position of a fling animation.
+            val decay = splineBasedDecay<Float>(this)
+            // Wrap in a coroutine scope to use suspend functions for touch events and animation.
+            coroutineScope {
             while (true) {
                 // Wait for a touch down event.
                 val pointerId = awaitPointerEventScope { awaitFirstDown().id }
